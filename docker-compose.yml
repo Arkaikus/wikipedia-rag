@@ -1,8 +1,9 @@
 services:
   # Chroma Vector Database (Primary)
   chroma:
-    image: chromadb/chroma:0.4.22
+    image: chromadb/chroma:latest
     container_name: rag-chroma
+    platform: linux/amd64
     ports:
       - "8000:8000"
     volumes:

@@ -35,7 +35,6 @@ class TestWikipediaScraper:
         title = scraper._extract_title_from_identifier("Albert Einstein")
         assert title == "Albert Einstein"
 
-    @pytest.mark.skip(reason="Requires internet connection")
     def test_fetch_existing_page(self):
         """Test fetching a real Wikipedia page."""
         scraper = WikipediaScraper()
@@ -49,7 +48,6 @@ class TestWikipediaScraper:
         assert len(page.raw_content) > 0
         assert page.word_count > 100
 
-    @pytest.mark.skip(reason="Requires internet connection")
     def test_fetch_page_by_url(self):
         """Test fetching a page by URL."""
         scraper = WikipediaScraper()
@@ -59,7 +57,6 @@ class TestWikipediaScraper:
         assert "Artificial intelligence" in page.title
         assert len(page.sections) > 0
 
-    @pytest.mark.skip(reason="Requires internet connection")
     def test_fetch_nonexistent_page(self):
         """Test that fetching non-existent page raises error."""
         scraper = WikipediaScraper()
@@ -67,7 +64,7 @@ class TestWikipediaScraper:
         with pytest.raises(PageNotFoundError):
             scraper.fetch("ThisPageDefinitelyDoesNotExist12345")
 
-    @pytest.mark.skip(reason="Requires internet connection")
+    @pytest.mark.skip(reason="high chances of 403 Forbidden")
     def test_search_pages(self):
         """Test searching for Wikipedia pages."""
         scraper = WikipediaScraper()
@@ -77,7 +74,6 @@ class TestWikipediaScraper:
         assert len(results) > 0
         assert any("quantum" in r.lower() for r in results)
 
-    @pytest.mark.skip(reason="Requires internet connection")
     def test_get_page_info(self):
         """Test getting page info without full content."""
         scraper = WikipediaScraper()
@@ -89,7 +85,6 @@ class TestWikipediaScraper:
         assert "Python" in info["title"]
         assert info["url"] is not None
 
-    @pytest.mark.skip(reason="Requires internet connection")
     def test_convenience_function(self):
         """Test convenience function for fetching pages."""
         page = fetch_wikipedia_page("Machine learning")
