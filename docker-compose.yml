@@ -1,0 +1,56 @@
+services:
+  # Chroma Vector Database (Primary)
+  chroma:
+    image: chromadb/chroma:0.4.22
+    container_name: rag-chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
+    networks:
+      - rag-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Weaviate Vector Database (Alternative)
+  weaviate:
+    image: semitechnologies/weaviate:1.24.1
+    container_name: rag-weaviate
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    volumes:
+      - ./weaviate_data:/var/lib/weaviate
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+    networks:
+      - rag-network
+    restart: unless-stopped
+    profiles:
+      - weaviate  # Only starts when explicitly requested
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  rag-network:
+    driver: bridge
+
+volumes:
+  chroma_data:
+  weaviate_data:

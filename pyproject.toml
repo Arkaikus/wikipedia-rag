@@ -1,0 +1,128 @@
+[project]
+name = "rag-wikipedia-chatbot"
+version = "0.1.0"
+description = "RAG-based chatbot for Wikipedia pages with LMStudio and vector database support"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    # Core RAG Framework
+    "langchain>=0.1.9",
+    "langchain-community>=0.0.24",
+    "langchain-core>=0.1.27",
+    
+    # LLM & Embeddings
+    "openai>=1.12.0",
+    "sentence-transformers>=2.3.1",
+    "torch>=2.2.0",
+    
+    # Vector Databases
+    "chromadb>=0.4.22",
+    "weaviate-client>=4.4.2",
+    
+    # Wikipedia & Web Scraping
+    "wikipedia-api>=0.6.0",
+    "beautifulsoup4>=4.12.3",
+    "requests>=2.31.0",
+    "lxml>=5.1.0",
+    
+    # Utilities
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.6.1",
+    "pydantic-settings>=2.1.0",
+    
+    # CLI & UX
+    "rich>=13.7.0",
+    "click>=8.1.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.5",
+    "pytest-mock>=3.12.0",
+    "pytest-cov>=4.1.0",
+    
+    # Code Quality
+    "black>=24.2.0",
+    "ruff>=0.2.2",
+    "mypy>=1.8.0",
+    
+    # Development
+    "ipython>=8.21.0",
+    "ipdb>=0.13.13",
+]
+
+[project.scripts]
+rag-chat = "main:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+    "chromadb.*",
+    "weaviate.*",
+    "sentence_transformers.*",
+    "wikipedia.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--cov=src",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
