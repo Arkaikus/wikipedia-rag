@@ -76,31 +76,83 @@ docker-compose ps
 ### 4. Run the Chatbot
 
 ```bash
+# Start the interactive CLI
 python main.py
+
+# Or auto-load a page on startup
+python main.py --load "Albert Einstein"
+
+# Or enable debug logging
+python main.py --debug
 ```
 
 ## Usage Example
 
-```
-> load "Quantum Mechanics"
-Loading Wikipedia page...
-Processing 127 chunks...
-Indexing complete!
+```bash
+# Start the application
+$ python main.py
+
+┌─ Welcome ─────────────────────────────────────────┐
+│ RAG Wikipedia Chatbot                             │
+│                                                    │
+│ Commands:                                          │
+│ - load <page>  - Load a Wikipedia page            │
+│ - chat         - Enter chat mode                  │
+│ - info         - Show current page info           │
+│ - clear        - Clear current page               │
+│ - help         - Show help                        │
+│ - exit         - Quit application                 │
+└────────────────────────────────────────────────────┘
+
+> load Quantum Mechanics
+
+✓ Page loaded and indexed!
+
+Title           Quantum Mechanics
+Word Count      12,456
+Sections        23
+Chunks Created  45
+Stored in DB    45
+
+Ready to chat! Type chat to start.
 
 > chat
+
+Chat Mode - Quantum Mechanics
+Type your questions. Use 'exit' to leave chat mode.
+
 You: What is the uncertainty principle?
-Assistant: The uncertainty principle, formulated by Werner Heisenberg, 
-states that... [Quantum Mechanics - Uncertainty Principle, https://...]
+Assistant: The uncertainty principle, formulated by Werner Heisenberg, states that certain pairs of physical properties cannot be simultaneously known with arbitrary precision...
+
+**Sources:**
+- Uncertainty Principle (https://en.wikipedia.org/wiki/Quantum_Mechanics)
+- Heisenberg's Formulation (https://en.wikipedia.org/wiki/Quantum_Mechanics)
+
+You: exit
+Exiting chat mode
+
+> exit
+Thanks for using RAG Wikipedia Chatbot!
 ```
+
+## Available Commands
+
+- **load <page>** - Load and index a Wikipedia page
+- **chat** - Enter interactive Q&A mode
+- **info** - Show current page information
+- **clear** - Clear current page from index
+- **help** - Display command help
+- **exit** - Quit the application
 
 ## Documentation
 
-- **[TODO.md](TODO.md)** - Complete development roadmap (10 phases)
+- **[TODO.md](TODO.md)** - Complete development roadmap (Phases 1-10 complete!)
 - **[QUICKSTART.md](QUICKSTART.md)** - Get running in under 10 minutes
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and patterns
 - **[DEVELOPMENT.md](DEVELOPMENT.md)** - Development workflow and best practices
 - **[MIGRATION.md](MIGRATION.md)** - Guide for migrating to cloud services
 - **[UV_GUIDE.md](UV_GUIDE.md)** - Quick reference for uv package manager
+- **[PHASE7_COMPLETE.md](PHASE7_COMPLETE.md)** - CLI implementation details
 
 ## Technology Stack
 
@@ -111,17 +163,29 @@ states that... [Quantum Mechanics - Uncertainty Principle, https://...]
 - **LLM**: LMStudio (local) → OpenAI/Azure (cloud adapters)
 - **Embeddings**: sentence-transformers (all-MiniLM-L6-v2)
 - **Web Scraping**: Wikipedia API + BeautifulSoup4
+- **CLI**: Click + Rich (beautiful terminal UI)
 
 ## Project Status
 
-🚧 **MVP Development Phase** - Following TODO.md roadmap
+✅ **MVP COMPLETE!** - All core phases implemented!
 
-Current: Project structure and documentation complete
-Next: Implement Wikipedia scraper (Phase 2)
+**Completed Phases:**
+- ✅ Phase 1: Project Setup & Infrastructure
+- ✅ Phase 2: Wikipedia Data Retrieval & Processing
+- ✅ Phase 3: Vector Database Integration (ChromaDB)
+- ✅ Phase 4: Embedding Service
+- ✅ Phase 5: LLM Integration with Adapter Pattern
+- ✅ Phase 6: RAG Service Implementation
+- ✅ Phase 7: CLI Interface (MVP)
+- ✅ Phase 8: Configuration & Error Handling
+- ✅ Phase 9: Testing
+- ✅ Phase 10: Documentation
+
+**Next:** Future enhancements (see TODO.md)
 
 ## Contributing
 
-This is an MVP project. Development follows the roadmap in TODO.md.
+This is an MVP project. Future enhancements are outlined in TODO.md.
 
 ## License
 

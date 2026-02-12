@@ -40,7 +40,11 @@ class ChromaAdapter(VectorDBAdapter):
         settings = get_settings()
         self.host = host or settings.chroma_host
         self.port = port or settings.chroma_port
-        self.client: Optional[chromadb.HttpClient] = None
+        self.client = chromadb.HttpClient(
+            host=self.host,
+            port=self.port,
+            settings=Settings(anonymized_telemetry=False),
+        )
         self.collections: dict = {}
 
         logger.info(f"ChromaDB adapter initialized (host={self.host}, port={self.port})")
@@ -48,17 +52,10 @@ class ChromaAdapter(VectorDBAdapter):
     def initialize(self) -> None:
         """Initialize connection to ChromaDB."""
         try:
-            self.client = chromadb.HttpClient(
-                host=self.host,
-                port=self.port,
-                settings=Settings(anonymized_telemetry=False),
-            )
-
             # Test connection
             self.client.heartbeat()
 
             logger.info("ChromaDB connection established successfully")
-
         except Exception as e:
             logger.error(f"Failed to initialize ChromaDB: {e}", exc_info=True)
             raise StorageError(f"Failed to connect to ChromaDB: {e}") from e
@@ -71,9 +68,6 @@ class ChromaAdapter(VectorDBAdapter):
             collection_name: Name of the collection
             **kwargs: Additional parameters (metadata, distance_function, etc.)
         """
-        if self.client is None:
-            self.initialize()
-
         try:
             # Check if collection already exists
             if self.collection_exists(collection_name):
@@ -104,9 +98,6 @@ class ChromaAdapter(VectorDBAdapter):
         Args:
             collection_name: Name of the collection to delete
         """
-        if self.client is None:
-            self.initialize()
-
         try:
             self.client.delete_collection(name=collection_name)
 
@@ -130,9 +121,6 @@ class ChromaAdapter(VectorDBAdapter):
         Returns:
             True if exists, False otherwise
         """
-        if self.client is None:
-            self.initialize()
-
         try:
             collections = self.client.list_collections()
             return any(col.name == collection_name for col in collections)
@@ -143,9 +131,6 @@ class ChromaAdapter(VectorDBAdapter):
 
     def _get_collection(self, collection_name: str):
         """Get or retrieve a collection."""
-        if self.client is None:
-            self.initialize()
-
         # Check cache first
         if collection_name in self.collections:
             return self.collections[collection_name]
@@ -157,9 +142,7 @@ class ChromaAdapter(VectorDBAdapter):
             return collection
 
         except Exception as e:
-            raise CollectionNotFoundError(
-                f"Collection '{collection_name}' not found: {e}"
-            ) from e
+            raise CollectionNotFoundError(f"Collection '{collection_name}' not found: {e}") from e
 
     def store_documents(
         self,
@@ -206,10 +189,7 @@ class ChromaAdapter(VectorDBAdapter):
                     metadatas=metadatas[i:batch_end],
                 )
 
-                logger.debug(
-                    f"Stored batch {i // batch_size + 1}: "
-                    f"{batch_end - i} chunks in '{collection_name}'"
-                )
+                logger.debug(f"Stored batch {i // batch_size + 1}: " f"{batch_end - i} chunks in '{collection_name}'")
 
             logger.info(f"Stored {len(chunks)} chunks in collection '{collection_name}'")
 
@@ -274,9 +254,7 @@ class ChromaAdapter(VectorDBAdapter):
 
                     search_results.append((chunk, similarity))
 
-            logger.info(
-                f"Found {len(search_results)} results in collection '{collection_name}'"
-            )
+            logger.info(f"Found {len(search_results)} results in collection '{collection_name}'")
 
             return search_results
 

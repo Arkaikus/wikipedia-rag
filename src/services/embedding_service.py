@@ -39,7 +39,7 @@ class EmbeddingService:
             )
 
         self.config = config
-        self.model: Optional[SentenceTransformer] = None
+        self.model: SentenceTransformer = None
         self.embedding_dimension: Optional[int] = None
 
         logger.info(
@@ -128,11 +128,9 @@ class EmbeddingService:
             )
 
             # Convert to list of lists
-            embeddings_list = embeddings.tolist()
+            logger.info(f"Generated {embeddings.shape} embeddings")
 
-            logger.info(f"Generated {len(embeddings_list)} embeddings")
-
-            return embeddings_list
+            return embeddings.tolist()
 
         except Exception as e:
             logger.error(f"Failed to generate embeddings: {e}", exc_info=True)
