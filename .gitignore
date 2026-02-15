@@ -67,7 +67,6 @@ htmlcov/
 dmypy.json
 
 # Model files (if downloading locally)
-models/
 *.bin
 *.gguf
 
